@@ -11,10 +11,10 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
 
         <!-- TODO display the name of the activity -->
-        <h1 class="text-center">Time Tracker</h1>
+        <h1 class="text-center">{{activity}} Time Tracker</h1>
 
         <div id="add-hours" class="card">
 
@@ -22,7 +22,10 @@
             <div class="card-body">
                
                 <!-- TODO use v-if to show this if there are validation errors -->
-                <div class="alert alert-danger">
+                <div class="alert alert-danger" v-if = 'errors.length > 0'>
+                    <ul>
+                        <li v-for = 'error in errors'> {{error}}</li>
+                    </ul>
                     <!-- TODO show a list of validation errors from form -->
                 </div>
 
@@ -30,7 +33,7 @@
                     <!-- TODO display name of activity in the label -->
                     <label class="form-label" for="date">What date did you do this activity?</label>
                     <!-- TODO use v-model to connect this input to dateString data -->
-                    <input id="date" class="form-control" type="date">
+                    <input id="date" class="form-control" type="date" v-model = 'dateString'>
                     <small id="date-help" class="form-text text-muted">
                         Date must be today or in the past.
                     </small>
@@ -39,7 +42,7 @@
                 <div class="form-group">
                     <label class="form-label" for="hours">How many hours did you practice for?</label>
                     <!-- TODO use v-model to connect this input to hours data -->
-                    <input id="hours" class="form-control" type="number" min="0" max="24">
+                    <input id="hours" class="form-control" type="number" min="0" max="24" v-model.number = "hours">
                     <small id="hours-help" class="form-text text-muted">
                         Enter a number of hours, more than 0, up to a maximum of 24
                     </small>
@@ -47,6 +50,10 @@
 
                 <div class="form-group">
                     <label class="form-label" for="type">What type?</label>
+                    <br>
+                    <select class="form-control" v-model = 'type' >
+                        <option v-for = 'activityType in types'>{{activityType}}</option>
+                    </select>
                     <!-- TODO Create select element, use v-model to connect to the types -->
                     <!-- TODO Use v-for to create option elements, one for each type -->
                 </div>
@@ -57,19 +64,19 @@
 
                 <div class="form-check-inline">
                     <!-- TODO v-model media -->
-                    <input id="media1" class="form-check-input" type="radio">
-                    <label class="form-check-label" for="media1">  <!--TODO Display text -->  </label>
+                    <input id="media1" class="form-check-input" type="radio" value = 'Traditional' v-model = 'medium' >
+                    <label class="form-check-label" for="media1"> Traditional  <!--TODO Display text -->  </label>
                 </div>
 
                 <div class="form-check-inline">
                     <!-- TODO v-model media -->
-                    <input id="media2" class="form-check-input" type="radio">
-                    <label class="form-check-label" for="media2">  <!-- TODO Display text -->  </label>
+                    <input id="media2" class="form-check-input" type="radio" value = 'Digital' v-model = 'medium' >
+                    <label class="form-check-label" for="media2"> Digital <!-- TODO Display text -->  </label>
                 </div>
 
                 <div>
                     <!-- TODO Add v-on:click -->
-                    <button class="btn btn-primary mt-2" type="button">Add record</button>
+                    <button class="btn btn-primary mt-2" type="button" @click = 'submit' >Add record</button>
                 </div>
                 
             </div>
@@ -89,6 +96,13 @@
                             <th>How many hours?</th>
                             <th>Type</th>
                             <th>Media</th>
+                        </tr>
+
+                        <tr v-for = 'record in activityRecords'>
+                            <td>{{ shortDate(record.date)}}</td>
+                            <td>{{record.hours}}</td>
+                            <td>{{record.type}}</td>
+                            <td>{{record.medium}}</td>
                         </tr>
                         <!-- TODO use v-for to create one table row for each activity record -->
                     </table>
@@ -115,6 +129,67 @@
     <script>
 
     //   TODO create new Vue app here
+
+    let app = Vue.createApp({
+        data(){
+            return {
+                activity: 'Practice Art',
+                activityRecords: [],
+
+                // v-modeled form inputs
+                dateString: '',
+                hours: 1,
+                type: 'Sketching',
+                medium: 'Traditional',
+
+                types: ['Sketching', 'Drawing', 'Painting'],
+
+                errors: []
+
+            }
+        },
+        methods: {
+            submit(){
+
+                this.errors = []
+
+                let date = new Date(this.dateString)
+
+                if (!this.dateString || this.dateString == 'Invalid Date' || date > new Date()) {
+                    this.errors.push('Select a valid date, today or in the past')
+                }
+
+                if (this.hours <= 0 || this.hours > 24) {
+                    this.errors.push('Enter a number of hours, more than 0, up to a maximum of 24')
+                }
+
+                if (!this.type) {
+                    this.errors.push('Select a type')
+                }
+                if (!this.medium) {
+                    this.errors.push('Select a medium')
+                }
+
+                if (this.errors.length === 0) {
+                    let record = {
+                    date: date,
+                    hours: this.hours,
+                    type: this.type,
+                    medium: this.medium,
+                }
+
+                this.activityRecords.push(record)
+                console.log(this.activityRecords)
+                }
+                console.log(this.errors)
+
+            },
+            shortDate(date){
+                return new Intl.DateTimeFormat('en-US', {timeZone: 'UTC'}).format(date)
+            }
+        }
+    })
+    app.mount('#app')
 
     </script>
 
