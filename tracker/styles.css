@@ -6,3 +6,16 @@
 [v-cloak] {
     display: none;
 }
+
+.paintingRow {
+    background-color: #e3d3c2;
+}
+.sketchingRow {
+    background-color: #365577;
+}
+.drawingRow {
+    background-color: #a2bb96;
+}
+
+
+

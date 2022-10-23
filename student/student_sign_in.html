@@ -53,7 +53,8 @@
                    <!-- TODO create table rows 
                    Each row will have a checkbox, bound to the app's data 
                    When the checkbox is checked/unchecked, the student will be signed in/out -->
-                    <tr v-for = 'student in students' v-bind:class = "{present: student.present, absent: !student.present }">
+                    <tr v-for = 'student in students' v-bind:class = "{present: student.present , absent: !student.present }">
+                        <!-- absent -->
                         <!-- you can just use : because vue knows that it means v-bind -->
                             <td>{{ student.name }}</td>
                             <td>{{ student.starID }}</td>
