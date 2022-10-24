@@ -17,5 +17,30 @@
     background-color: #a2bb96;
 }
 
+/* .textOverflow {
+    white-space: nowrap; 
+    width: 100px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 20px solid #ff0000;
+}
+
+.textOverflow:hover {
+    overflow: visible;
+} */
+
+
+#hi {
+    width: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  padding: 20px;
+  font-size: 1.3rem;
+  margin: 0;
+  background: white;
+  resize: horizontal;
+}
 
 

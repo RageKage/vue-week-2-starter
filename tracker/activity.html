@@ -15,7 +15,7 @@
 
         <!-- TODO display the name of the activity -->
         <h1 class="text-center">{{activity}} Time Tracker</h1>
-
+        <p id="bye"></p>
         <div id="add-hours" class="card">
 
             <h2 class="card-header">Add Records</h2>
@@ -82,7 +82,7 @@
                 <div>
                     <br>
                     <label  for = "Note" >Note:</label> 
-                    <textarea placeholder="Write on here" maxlength="40" rows="7" cols="70" id="Note" class="form-control" v-model = 'notes'></textarea> 
+                    <textarea placeholder="Write on here"  rows="7" cols="70" id="Note" class="form-control" v-model = 'notes'></textarea> 
                 </div>
                 
                  
@@ -95,6 +95,7 @@
         </div>
 
         <div class="card">
+            
             <h2 class="card-header">Activity Records</h2>
 
             <div class="card-body">
@@ -113,19 +114,22 @@
                             <th>Notes</th>
                         </tr>
 
-                        <tr v-for = 'record in activityRecords' :class = "{sketchingRow: record.type == 'Sketching', drawingRow: record.type === 'Drawing', paintingRow: record.type === 'Painting'}">
+                        <tr v-for = 'record in activityRecords' :class = "{sketchingRow:  record.type == 'Sketching' , drawingRow: record.type === 'Drawing', paintingRow: record.type === 'Painting'}" 
+                         >
+                            <!-- @mouseleave="this.notes = shortDisplay(record.notes)" @mouseover="record.notes = record.SavedNotes " -->
                             <!-- v-bind:class = "{sketchingRow: this.types[0], paintingRow: this.types[1] }" -->
                             <!-- :class = "{paintingRow: this.types[0]}" :class = "{sketchingRow: this.types[2] }" -->
                             <!-- `${if this.type === this.types[2]` -->
                             <!-- this.types[2] == this.types[2 -->
                             <!-- :class = "{sketchingRow: record.type == 'Sketching', drawingRow: record.type === 'Drawing', paintingRow: record.type === 'Painting'}"
-                            this code works but will change all the rows the same color depeanding on the type you select -->
-                            <td>{{ shortDate(record.date)}}</td>
-                            <td>{{record.hours}}</td>
-                            <td>{{record.type}} </td>
-                            <td>{{record.medium}}</td>
-                            <td>{{record.completed}}</td>
-                            <td>{{record.notes}}</td>
+                            this code works but will change all the rows the same color depeanding on the type you select-->
+                            <!--  -->
+                            <td >{{ shortDate(record.date) }}</td>
+                            <td>{{ record.hours }}</td>
+                            <td>{{ record.type }} </td>
+                            <td>{{ record.medium }}</td>
+                            <td>{{ record.completed }}</td>
+                            <td @mouseleave="record.notes = shortDisplay(record.notes)" @mouseover="record.notes = record.SavedNotes ">{{ record.notes }}</td>
                         </tr>
                         <!-- TODO use v-for to create one table row for each activity record -->
                     </table>
@@ -168,10 +172,11 @@
                 completedString: '',
                 types: ['Sketching', 'Drawing', 'Painting'],
                 notes: '',
+                SavedNotes:'',
 
                 errors: []
 
-                
+
 
 
             }
@@ -179,11 +184,14 @@
         methods: {
             submit(){
 
+                let a = document.querySelector('#bye')
+
                 this.errors = []
 
                 let date = new Date(this.dateString)
-
     
+                this.SavedNotes = this.notes
+
                 if (this.completed == true) {
                     this.completedString = 'Completed'
                 } else {
@@ -213,8 +221,13 @@
                     type: this.type,
                     medium: this.medium,
                     completed: this.completedString,
-                    notes: this.notes
+                    notes: this.notes,
+                    SavedNotes: this.SavedNotes
                 }
+                console.log(record.notes)
+                this.notes = ''
+                this.data = 0
+                this.hours = 1
                 
                 
                 this.activityRecords.push(record)
@@ -222,21 +235,31 @@
                     return r1.date.getTime() - r2.date.getTime()
                 })
 
-                // console.log(record.hours)
-                // console.log(this.activityRecords)
-                // let sketching = this.types[0]
-                // let drawing = this.types[1]
-                // let painting = this.types[2]
-
                 }
-                this.notes = ''
-                // this.hours = '1'
-                
-                // text.slice(0, count) + (text.length > count ? "..." : "");
+
 
             },
             shortDate(date){
                 return new Intl.DateTimeFormat('en-US', {timeZone: 'UTC'}).format(date)
+            }
+            ,
+            shortDisplay(notes) {
+
+                if (notes.length > 40) {
+                    return notes.slice(0, 50 + 1) + '…' 
+                } else {
+                    return notes
+                }
+                // return notes.slice(0, 50 + 1) + '…' 
+                // return console.log(notes.length)
+                // if (this.notes.length > 40) {
+                //    return notes.slice(0, 40 - 1) + '…' 
+                //     // console.log('it is over 40 charaters ',  notes.slice(0, 40 - 1) + '…')
+                // } else {
+                //     return this.notes
+                //     // console.log('it is NOT NOT over 40 charaters')
+                    
+                // }
             }
             
         },
@@ -252,8 +275,7 @@
                 }   
                 
             }, 
-            // talk with clara on this because it doesn't return the wanted hours.
-            // it doesn't return the added hours
+
             totalHours () {
                 let total = 0
 
