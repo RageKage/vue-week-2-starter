@@ -128,7 +128,7 @@
                             <td>{{ record.hours }}</td>
                             <td>{{ record.type }} </td>
                             <td>{{ record.medium }}</td>
-                            <td>{{ record.completed }}</td>
+                            <td>{{ record.completedString }}</td>
                             <td @mouseleave="record.notes = shortDisplay(record.notes)" @mouseover="record.notes = record.SavedNotes ">{{ record.notes }}</td>
                         </tr>
                         <!-- TODO use v-for to create one table row for each activity record -->
@@ -168,18 +168,15 @@
                 hours: 1,
                 type: 'Sketching',
                 medium: 'Traditional',
-                completed: '',
+                completed: false,
                 completedString: '',
                 types: ['Sketching', 'Drawing', 'Painting'],
                 notes: '',
                 SavedNotes:'',
 
                 errors: []
-
-
-
-
             }
+    
         },
         methods: {
             submit(){
@@ -220,14 +217,17 @@
                     hours: this.hours,
                     type: this.type,
                     medium: this.medium,
-                    completed: this.completedString,
+                    completedString: this.completedString,
                     notes: this.notes,
                     SavedNotes: this.SavedNotes
                 }
-                console.log(record.notes)
+
+                this.completed = false
+
                 this.notes = ''
                 this.data = 0
                 this.hours = 1
+
                 
                 
                 this.activityRecords.push(record)
@@ -236,7 +236,6 @@
                 })
 
                 }
-
 
             },
             shortDate(date){
